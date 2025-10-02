@@ -1,6 +1,6 @@
 'use client';
 
-import { type actionFunction } from '@/utils/types';
+import { actionFunction } from '@/utils/types';
 import { LucideUser2 } from 'lucide-react';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import FormContainer from './FormContainer';
 import ImageInput from './ImageInput';
 import { SubmitButton } from './Buttons';
+
 type ImageInputContainerProps = {
   image: string;
   name: string;
@@ -32,7 +33,7 @@ export default function ImageInputContainer(props: ImageInputContainerProps) {
           alt={name}
           width={100}
           height={100}
-          className='rounded, object-cover mb-4 w-24 h-24'
+          className='rounded object-cover mb-4 w-24 h-24'
         />
       ) : (
         userIcon

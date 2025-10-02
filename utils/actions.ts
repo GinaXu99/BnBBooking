@@ -3,7 +3,12 @@
 import db from './db';
 import { clerkClient, currentUser } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
-import { imageSchema, profileSchema, validateWithZodSchema } from './schema';
+import {
+  imageSchema,
+  profileSchema,
+  propertySchema,
+  validateWithZodSchema,
+} from './schema';
 import { redirect } from 'next/navigation';
 import { uploadImage } from './supabase';
 
@@ -11,6 +16,70 @@ const renderError = (error: unknown): { message: string } => {
   return {
     message: error instanceof Error ? error.message : 'Error occured',
   };
+};
+
+/**PROPERTY PART */
+export const createPropertyAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await getAuthUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+    const file = formData.get('image') as File;
+    console.log(typeof rawData.price);
+    console.log(rawData);
+    const validatedFields = validateWithZodSchema(propertySchema, rawData);
+    //console.log(validatedFields);
+
+    const validatedFile = validateWithZodSchema(imageSchema, { image: file });
+    //console.log(validatedFile);
+
+    const fullPath = await uploadImage(validatedFile.image);
+
+    await db.property.create({
+      data: {
+        ...validatedFields,
+        image: fullPath,
+        profileId: user.id,
+      },
+    });
+  } catch (error) {
+    console.log('inside error');
+    return renderError(error);
+  }
+  redirect('/');
+};
+
+export const fetchProperties = async ({
+  search = '',
+  category,
+}: {
+  search?: string;
+  category?: string;
+}) => {
+  const properties = await db.property.findMany({
+    where: {
+      category,
+      OR: [
+        { name: { contains: search, mode: 'insensitive' } },
+        { tagline: { contains: search, mode: 'insensitive' } },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      tagline: true,
+      country: true,
+      price: true,
+      image: true,
+    },
+
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return properties;
 };
 
 /**USER PART */
@@ -125,7 +194,6 @@ export const updateProfileImageAction = async (
         profileImage: fullPath,
       },
     });
-
     revalidatePath('/profile');
     return { message: 'profile image updated successfully' };
   } catch (error) {

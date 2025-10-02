@@ -18,7 +18,7 @@ export default function FormContainer({
   const [state, formAction] = useFormState(action, initialState);
   useEffect(() => {
     if (state.message) {
-      toast('form container msg', {
+      toast('Message from formcontainer', {
         description: state.message,
       });
     }
