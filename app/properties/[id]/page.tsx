@@ -13,9 +13,9 @@ import UserInfo from '@/components/properties/UserInfo';
 import Description from '@/components/properties/Description';
 import Amenities from '@/components/properties/Amenities';
 import dynamic from 'next/dynamic';
-import BookingCalendar from '@/components/bookings/BookingCalendar';
 import PropertyReviews from '@/components/reviews/PropertyReviews';
 import SubmitReview from '@/components/reviews/SubmitReview';
+
 const DynamicMap = dynamic(
   () => import('@/components/properties/PropertyMap'),
   {
@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const property = await fetchPropertyDetails(params.id);
   if (!property) redirect('/');
 
-  const { baths, bedrooms, beds, guests } = property;
+  const { baths, bedrooms, beds, guests, bookings } = property;
 
   const details = { baths, bedrooms, beds, guests };
   const firstName = property.profile.firstName;
@@ -72,7 +72,11 @@ export default async function Page({ params }: { params: { id: string } }) {
           <DynamicMap countryCode={property.country} />
         </div>
         <div className='lg:col-span-4 flex flex-col items-center'>
-          <BookingCalendar />
+          <DynamicBookingWrapper
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+          />
         </div>
       </section>
       {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}

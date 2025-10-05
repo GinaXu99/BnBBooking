@@ -7,6 +7,7 @@ export const generateDateRange = (range: DateRange | undefined): string[] => {
   const currentDate = new Date(range.from);
   const endDate = new Date(range.to);
   const dateRange: string[] = [];
+
   while (currentDate <= endDate) {
     const dateString = currentDate.toISOString().split('T')[0];
     dateRange.push(dateString);
@@ -20,10 +21,10 @@ export const defaultSelected: DateRange = {
 };
 
 export const generateBlockedPeriods = ({
-  bookings,
+  bookings = [],
   today,
 }: {
-  bookings: Booking[];
+  bookings?: Booking[];
   today: Date;
 }) => {
   today.setHours(0, 0, 0, 0); // Set the time to 00:00:00.000
@@ -76,8 +77,21 @@ export function calculateDaysBetween({
   checkIn: Date;
   checkOut: Date;
 }) {
-  const diffInMins = Math.abs(checkOut.getTime() - checkIn.getTime());
+  // Use UTC to avoid timezone issues
+  const checkInDate = Date.UTC(
+    checkIn.getFullYear(),
+    checkIn.getMonth(),
+    checkIn.getDate()
+  );
 
-  const diffInDays = diffInMins / (1000 * 60 * 60 * 24);
+  const checkOutDate = Date.UTC(
+    checkOut.getFullYear(),
+    checkOut.getMonth(),
+    checkOut.getDate()
+  );
+
+  const diffInMs = checkOutDate - checkInDate;
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
   return diffInDays;
 }

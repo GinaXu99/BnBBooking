@@ -2,11 +2,12 @@
 
 import ConfirmBooking from './ConfirmBooking';
 import BookingForm from './BookingForm';
+import { useProperty } from '@/utils/store';
 function BookingContainer() {
-  // const { range } = useProperty((state) => state);
+  const { range } = useProperty((state) => state);
 
-  // if (!range || !range.from || !range.to) return null;
-  // if (range.to.getTime() === range.from.getTime()) return null;
+  if (!range || !range.from || !range.to) return null;
+  if (range.to.getTime() === range.from.getTime()) return null;
   return (
     <div className='w-full'>
       <BookingForm />

@@ -12,11 +12,61 @@ import {
 } from './schema';
 import { redirect } from 'next/navigation';
 import { uploadImage } from './supabase';
+import { calculateTotals } from './calculateTotals';
 
 const renderError = (error: unknown): { message: string } => {
   return {
     message: error instanceof Error ? error.message : 'Error occured',
   };
+};
+
+/**BOOKING PART */
+export const createBookingAction = async (preveState: {
+  propertyId: string;
+  checkIn: Date;
+  checkOut: Date;
+}) => {
+  const user = await getAuthUser();
+  await db.booking.deleteMany({
+    where: {
+      profileId: user.id,
+      paymentStatus: false,
+    },
+  });
+
+  const bookingId: null | string = null;
+  const { propertyId, checkIn, checkOut } = preveState;
+  const property = await db.property.findUnique({
+    where: { id: propertyId },
+    select: { price: true },
+  });
+
+  if (!property) {
+    return { message: 'Property not found' };
+  }
+
+  const { orderTotal, totalNights } = calculateTotals({
+    checkIn,
+    checkOut,
+    price: property.price,
+  });
+
+  try {
+    const booking = await db.booking.create({
+      data: {
+        checkIn,
+        checkOut,
+        orderTotal,
+        totalNights,
+        profileId: user.id,
+        propertyId,
+      },
+    });
+  } catch (error) {
+    return renderError(error);
+  }
+
+  redirect(`/checkout?bookingId=${bookingId}`);
 };
 
 /**REVIEW PART */
@@ -193,6 +243,7 @@ export const fetchPropertyDetails = (propertyId: string) => {
     },
     include: {
       profile: true,
+      bookings: true,
     },
   });
 };

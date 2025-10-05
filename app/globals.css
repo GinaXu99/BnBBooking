@@ -64,19 +64,26 @@
   }
 }
 
-/* Override react-day-picker default blue colors */
+/* Override react-day-picker default blue colors - Nuclear approach */
 :root {
   --rdp-accent-color: hsl(var(--primary)) !important;
   --rdp-accent-background-color: hsl(var(--primary)) !important;
+  --rdp-selected-bg: hsl(var(--primary)) !important;
+  --rdp-selected-color: hsl(var(--primary-foreground)) !important;
 }
 
+/* Target all possible selected state selectors */
 .rdp-day_button[data-selected="true"],
 .rdp-selected,
-button[data-selected="true"] {
+button[data-selected="true"],
+[data-selected="true"],
+.rdp button[aria-selected="true"],
+button[aria-selected="true"] {
   background-color: hsl(var(--primary)) !important;
   color: hsl(var(--primary-foreground)) !important;
   border: none !important;
   outline: none !important;
+  box-shadow: none !important;
 }
 
 .rdp-day_button[data-today="true"]:not([data-selected="true"]),
@@ -88,7 +95,8 @@ button[data-selected="true"] {
 }
 
 .rdp-day[data-range-middle="true"] .rdp-day_button,
-.rdp-range_middle {
+.rdp-range_middle,
+button[data-range-middle="true"] {
   background-color: hsl(var(--accent)) !important;
   color: hsl(var(--accent-foreground)) !important;
   border: none !important;
@@ -98,7 +106,9 @@ button[data-selected="true"] {
 .rdp-day[data-range-start="true"] .rdp-day_button,
 .rdp-day[data-range-end="true"] .rdp-day_button,
 .rdp-range_start,
-.rdp-range_end {
+.rdp-range_end,
+button[data-range-start="true"],
+button[data-range-end="true"] {
   background-color: hsl(var(--primary)) !important;
   color: hsl(var(--primary-foreground)) !important;
   border: none !important;
@@ -113,14 +123,157 @@ button[data-selected="true"] {
   outline: none !important;
 }
 
-/* Remove all borders from calendar buttons */
+/* Remove all borders and focus styles - Most aggressive approach */
+.rdp *,
 .rdp-day_button,
 .rdp-day_button:focus,
 .rdp-day_button:focus-visible,
+.rdp-day_button:active,
+[data-slot="calendar"] *,
 [data-slot="calendar"] button,
 [data-slot="calendar"] button:focus,
-[data-slot="calendar"] button:focus-visible {
-  border: none !important;
-  outline: none !important;
+[data-slot="calendar"] button:focus-visible,
+[data-slot="calendar"] button:active,
+.rdp button,
+.rdp button:focus,
+.rdp button:focus-visible,
+button[data-range-start="true"],
+button[data-range-start="true"]:focus,
+button[data-range-start="true"]:focus-visible,
+button[data-range-end="true"],
+button[data-range-end="true"]:focus,
+button[data-range-end="true"]:focus-visible,
+button[data-range-middle="true"],
+button[data-range-middle="true"]:focus,
+button[data-range-middle="true"]:focus-visible {
+  border: 0 !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  border-color: transparent !important;
+  outline: 0 !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  outline-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-color: transparent !important;
+  --tw-ring-offset-width: 0px !important;
+  --tw-border-opacity: 0 !important;
+}
+
+/* Ultra-specific selector to override button focus-visible border */
+button[data-slot="button"]:focus-visible,
+button[data-slot="button"][data-range-start="true"]:focus-visible,
+button[data-slot="button"][data-range-end="true"]:focus-visible,
+button[data-slot="button"][data-range-middle="true"]:focus-visible {
+  border: 0 !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+/* Remove bold font from selected calendar dates */
+.rdp button[data-selected="true"],
+.rdp button[data-range-start="true"],
+.rdp button[data-range-end="true"],
+.rdp button[data-range-middle="true"],
+button[data-selected-single="true"],
+button[data-range-start="true"],
+button[data-range-end="true"],
+button[data-range-middle="true"] {
+  font-weight: 400 !important;
+}
+
+/* Target native button elements in calendar - remove all borders */
+.rdp-day button,
+.rdp-day button:focus,
+.rdp-day button:focus-visible,
+.rdp-day button:active,
+.rdp-day button[data-range-start="true"],
+.rdp-day button[data-range-end="true"],
+td button,
+td button:focus,
+td button:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Nuclear option - remove all borders from any button inside calendar table */
+table[role="grid"] button,
+table[role="grid"] button:focus,
+table[role="grid"] button:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Ultimate nuclear option - override everything */
+[data-slot="calendar"] *,
+[data-slot="calendar"] *:focus,
+[data-slot="calendar"] *:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+.rdp *,
+.rdp *:focus,
+.rdp *:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Target the td elements specifically */
+.rdp td,
+.rdp td:focus,
+.rdp td:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Target the exact class from DevTools */
+.rdp-day_button[data-range-end="true"],
+.rdp-day_button[data-range-start="true"],
+.rdp-day_button[data-selected-single="true"],
+button.rdp-day_button,
+button.rdp-day_button:focus,
+button.rdp-day_button:focus-visible,
+button.rdp-day_button:active,
+button.rdp-day_button::before,
+button.rdp-day_button::after {
+  border: 0 !important;
+  border-width: 0 !important;
+  outline: 0 !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Try targeting with higher specificity */
+.rdp-month_grid .rdp-day button,
+.rdp-month_grid .rdp-day button:focus,
+.rdp-month_grid .rdp-day button:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Target by tabindex */
+button[tabindex="-1"],
+button[tabindex="-1"]:focus,
+button[tabindex="-1"]:focus-visible {
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* TARGET THE TD ELEMENTS - THIS IS THE REAL FIX */
+td.rdp-day,
+td.rdp-selected,
+td.rdp-range_end,
+td.rdp-range_start,
+td.rdp-range_middle,
+td[data-selected="true"],
+td[aria-selected="true"] {
+  border: 0 !important;
+  outline: 0 !important;
   box-shadow: none !important;
 }
