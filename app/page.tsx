@@ -1,11 +1,28 @@
-import { Button } from '@/components/ui/button';
-export default function HomePage() {
+import LoadingCard from '@/components/card/LoadingCard';
+import CategoriesList from '@/components/home/CategoriesList';
+import PropertiesContainer from '@/components/home/PropertiesContainer';
+import { Suspense } from 'react';
+
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams: {
+    category?: string;
+    search?: string;
+  };
+}) {
   return (
-    <div>
-      <h1 className='text-3xl'>Home Page</h1>
-      <Button size='lg' className='capitalize mt-10'>
-        Click me
-      </Button>
-    </div>
+    <section>
+      <CategoriesList
+        category={searchParams.category}
+        search={searchParams.search}
+      />
+      <Suspense fallback={<LoadingCard />}>
+        <PropertiesContainer
+          category={searchParams.category}
+          search={searchParams.search}
+        />
+      </Suspense>
+    </section>
   );
 }

@@ -63,3 +63,64 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Override react-day-picker default blue colors */
+:root {
+  --rdp-accent-color: hsl(var(--primary)) !important;
+  --rdp-accent-background-color: hsl(var(--primary)) !important;
+}
+
+.rdp-day_button[data-selected="true"],
+.rdp-selected,
+button[data-selected="true"] {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.rdp-day_button[data-today="true"]:not([data-selected="true"]),
+.rdp-today:not(.rdp-selected) {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.rdp-day[data-range-middle="true"] .rdp-day_button,
+.rdp-range_middle {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.rdp-day[data-range-start="true"] .rdp-day_button,
+.rdp-day[data-range-end="true"] .rdp-day_button,
+.rdp-range_start,
+.rdp-range_end {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+.rdp-day_button:hover:not([data-selected="true"]):not([data-disabled="true"]),
+.rdp-day:hover:not(.rdp-selected):not(.rdp-disabled) {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove all borders from calendar buttons */
+.rdp-day_button,
+.rdp-day_button:focus,
+.rdp-day_button:focus-visible,
+[data-slot="calendar"] button,
+[data-slot="calendar"] button:focus,
+[data-slot="calendar"] button:focus-visible {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}

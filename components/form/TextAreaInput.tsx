@@ -16,8 +16,8 @@ export default function TextAreaInput({
   defaultValue,
 }: TextAreaInputProps) {
   return (
-    <div>
-      <Label htmlFor={name} className='capitalize'>
+    <div className='mb-2 mt-6'>
+      <Label htmlFor={name} className='capitalize mb-2'>
         {labelText || name}
       </Label>
       <Textarea

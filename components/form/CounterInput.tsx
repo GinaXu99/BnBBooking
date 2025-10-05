@@ -29,7 +29,7 @@ export default function CounterInput({
       {/**INPUT */}
       <input type='hidden' name={detail} value={count} />
       <CardHeader className='flex flex-col gap-y-5'>
-        <div className='flex items-center justify-between flex-wrap'>
+        <div className='flex items-center justify-between flex-wrap gap-4'>
           <div className='flex flex-col'>
             <h2 className='font-medium capitalize'>{detail}</h2>
             <p className='text-muted-foreground text-sm'>

@@ -9,7 +9,7 @@ type FormInputNumberProps = {
 export default function PriceInput({ defaultValue }: FormInputNumberProps) {
   return (
     <div>
-      <Label>Price</Label>
+      <Label className='mb-2 capitalize'>price</Label>
       <Input
         id={name}
         type='number'

@@ -12,7 +12,7 @@ export default function RatingInput({
   labelText,
 }: {
   name: string;
-  labelText: string;
+  labelText?: string;
 }) {
   const numbers = Array.from({ length: 5 }, (_, i) => {
     const value = i + 1;
@@ -21,7 +21,7 @@ export default function RatingInput({
 
   return (
     <div className='mb-2 max-w-ws'>
-      <Label htmlFor={name} className='capitalize'>
+      <Label htmlFor={name} className='capitalize mb-2'>
         {labelText || name}
       </Label>
       <Select defaultValue={numbers[0]} name={name} required>

@@ -17,9 +17,9 @@ export default function CreatePropertyPage() {
         create property
       </h1>
       <div className='border p-8 rounded'>
-        <h3 className='text-lg mb-4 font-medium'>General Info</h3>
+        <h3 className='text-lg mb-4 font-medium'>General Information</h3>
         <FormContainer action={createPropertyAction}>
-          <div className='grid md:grid-cols-2 gap-8 mb-4'>
+          <div className='grid md:grid-cols-2 gap-4 mb-4'>
             <FormInput
               name='name'
               type='text'
@@ -43,7 +43,7 @@ export default function CreatePropertyPage() {
             <CountriesInput />
             <ImageInput />
           </div>
-          <h3 className='text-lg mt-8 mb-4 font-medium'>
+          <h3 className='text-lg mb-6 mt-4 font-medium'>
             Accommodation Details
           </h3>
 
@@ -52,7 +52,7 @@ export default function CreatePropertyPage() {
           <CounterInput detail='beds' />
           <CounterInput detail='baths' />
 
-          <h3 className='text-lg mt-10 font-medium'>Amenities</h3>
+          <h3 className='text-lg mt-6 mb-4 font-medium'>Amenities</h3>
           <AmenitiesInput />
           <SubmitButton text='Create Rental' className='mt-12' />
         </FormContainer>

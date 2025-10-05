@@ -35,7 +35,7 @@ export default function AmenitiesInput({
         name='amenities'
         value={JSON.stringify(selectedAmenities)}
       />
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-2 gap-4'>
         {selectedAmenities.map((amenity) => {
           return (
             <div key={amenity.name} className='flex items-center space-x-2'>

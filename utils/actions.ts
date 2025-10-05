@@ -1,9 +1,10 @@
 'use server';
 
 import db from './db';
-import { clerkClient, currentUser } from '@clerk/nextjs/server';
+import { clerkClient, currentUser, getAuth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
 import {
+  createReviewSchema,
   imageSchema,
   profileSchema,
   propertySchema,
@@ -18,7 +19,202 @@ const renderError = (error: unknown): { message: string } => {
   };
 };
 
+/**REVIEW PART */
+export async function createReviewAction(preveState: any, formData: FormData) {
+  const user = await getAuthUser();
+  try {
+    const rawData = Object.fromEntries(formData);
+    const validatedFields = validateWithZodSchema(createReviewSchema, rawData);
+    await db.review.create({
+      data: {
+        ...validatedFields,
+        profileId: user.id,
+      },
+    });
+    revalidatePath(`/properties/${validatedFields.propertyId}`);
+    return { message: 'review submitted successfully' };
+  } catch (error) {
+    return renderError(error);
+  }
+}
+
+export async function fetchPropertyReviews(propertyId: string) {
+  const reviews = await db.review.findMany({
+    where: {
+      propertyId,
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      profile: {
+        select: {
+          firstName: true,
+          profileImage: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return reviews;
+}
+
+export async function fetchPropertyReviewsByUser() {
+  const user = await getAuthUser();
+
+  const reviews = await db.review.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      property: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return reviews;
+}
+
+export async function deleteReviewAction(preveState: { reviewId: string }) {
+  const user = await getAuthUser();
+  const { reviewId } = preveState;
+
+  try {
+    await db.review.delete({
+      where: {
+        id: reviewId,
+        profileId: user.id,
+      },
+    });
+    revalidatePath('/reviews');
+    return { message: 'review deleted successfully' };
+  } catch (error) {
+    return renderError(error);
+  }
+}
+
+export async function findExistingReview(userId: string, propertyId: string) {
+  return db.review.findFirst({
+    where: {
+      profileId: userId,
+      propertyId: propertyId,
+    },
+  });
+}
+
+/**FAVORITES PART */
+export const fetchFavoriteId = async ({
+  propertyId,
+}: {
+  propertyId: string;
+}) => {
+  const user = await getAuthUser();
+  const favorite = await db.favorite.findFirst({
+    where: {
+      propertyId,
+      profileId: user.id,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return favorite?.id || null;
+};
+
+export const fetchFavorites = async () => {
+  const user = await getAuthUser();
+  const favorites = await db.favorite.findMany({
+    where: {
+      profileId: user.id,
+    },
+    select: {
+      property: {
+        select: {
+          id: true,
+          name: true,
+          tagline: true,
+          country: true,
+          price: true,
+          image: true,
+        },
+      },
+    },
+  });
+
+  return favorites.map((favorite) => favorite.property);
+};
+export const toggleFavoriteAction = async (prevState: {
+  propertyId: string;
+  favoriteId: string | null;
+  pathname: string;
+}) => {
+  const user = await getAuthUser();
+  const { propertyId, favoriteId, pathname } = prevState;
+
+  try {
+    if (favoriteId) {
+      await db.favorite.delete({
+        where: {
+          id: favoriteId,
+        },
+      });
+    } else {
+      await db.favorite.create({
+        data: {
+          propertyId,
+          profileId: user.id,
+        },
+      });
+    }
+    revalidatePath(pathname);
+    return {
+      message: favoriteId
+        ? 'Removed from Favorites Lists'
+        : 'Added to Favorites Lists',
+    };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
 /**PROPERTY PART */
+export const fetchPropertyDetails = (propertyId: string) => {
+  return db.property.findUnique({
+    where: {
+      id: propertyId,
+    },
+    include: {
+      profile: true,
+    },
+  });
+};
+export async function fetchPropertyRating(propertyId: string) {
+  const result = await db.review.groupBy({
+    by: ['propertyId'],
+    _avg: {
+      rating: true,
+    },
+    _count: {
+      rating: true,
+    },
+    where: {
+      propertyId,
+    },
+  });
+  return {
+    rating: result[0]?._avg.rating?.toFixed(1) ?? 0,
+    count: result[0]?._count.rating ?? 0,
+  };
+}
+
 export const createPropertyAction = async (
   prevState: any,
   formData: FormData
