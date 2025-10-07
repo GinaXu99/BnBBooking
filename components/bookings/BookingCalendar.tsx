@@ -24,18 +24,18 @@ export default function BookingCalendar() {
 
   useEffect(() => {
     const selectedRange = generateDateRange(range);
-    const isDisabledDateIncluded = selectedRange.some((date) => {
+    selectedRange.some((date) => {
       if (unavailableDates[date]) {
         setRange(defaultSelected);
         toast('Booking Calendar Toast', {
-          description: 'Some dates are booked, please select again',
+          description: 'these dates are booked, please select again',
         });
         return true;
       }
       return false;
     });
     useProperty.setState({ range });
-  }, [range]);
+  }, [range, unavailableDates]);
   return (
     <div className='w-full'>
       <Calendar

@@ -23,7 +23,7 @@ export default function BookingWrapper({
       price,
       bookings,
     });
-  }, []);
+  }, [propertyId, bookings, price]);
 
   return (
     <>

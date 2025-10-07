@@ -5,8 +5,8 @@ import { useFormStatus } from 'react-dom';
 import { IoReload } from 'react-icons/io5';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { SignInButton } from '@clerk/nextjs';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
-import { LuTrash2, LuSquare } from 'react-icons/lu';
+import { FaHeart, FaRegEdit, FaRegHeart } from 'react-icons/fa';
+import { LuTrash2 } from 'react-icons/lu';
 type btnSize = 'default' | 'lg' | 'sm';
 type SubmitButtonProps = {
   className?: string;
@@ -20,7 +20,7 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
   const renderIcon = () => {
     switch (actionType) {
       case 'edit':
-        return <LuSquare />;
+        return <FaRegEdit />;
       case 'delete':
         return <LuTrash2 />;
       default:

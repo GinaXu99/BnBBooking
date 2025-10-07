@@ -24,20 +24,20 @@ export default function CreatePropertyPage() {
               name='name'
               type='text'
               label='Name (20 limit)'
-              defaultValue='Cabin one'
+              defaultValue='property name'
             />
             <FormInput
               name='tagline'
               type='text'
               label='Tagline (30 limit)'
-              defaultValue='Cabin two'
+              defaultValue='property tagline'
             />
             <PriceInput />
             <CategoryInput />
           </div>
           <TextAreaInput
             name='description'
-            labelText='Description 10-100 words'
+            labelText='property description 10-100 words'
           />
           <div className='grid sm:grid-cols-3 gap-8 mt-4'>
             <CountriesInput />
